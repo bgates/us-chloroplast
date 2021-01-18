@@ -11,11 +11,10 @@ import {
   GeoJSON,
   MapConsumer,
 } from "react-leaflet";
-import { geoJSON, GeoJSON as LeafletGeoJSON, Map as LeafletMap } from "leaflet";
+import { geoJSON, Map as LeafletMap } from "leaflet";
 import "./App.css";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
-import { Eq } from "fp-ts/lib/Eq";
 
 const colors = [
   "#f7fbff",
@@ -29,24 +28,24 @@ const colors = [
   "#08306b",
 ]; // https://colorbrewer2.org/#type=sequential&scheme=Blues&n=9
 
-const getColor = (n: number) =>
-  n > 1000
+const getColor = (max: number) => (n: number) =>
+  n > 0.9 * max
     ? colors[8]
-    : n > 500
+    : n > 0.5 * max
     ? colors[7]
-    : n > 200
+    : n > 0.2 * max
     ? colors[6]
-    : n > 100
+    : n > 0.1 * max
     ? colors[5]
-    : n > 50
+    : n > 0.05 * max
     ? colors[4]
-    : n > 20
+    : n > 0.02 * max
     ? colors[3]
-    : n > 10
+    : n > 0.01 * max
     ? colors[2]
     : colors[1];
 
-const numericalRange = (year: number) => (features: Array<GeoJSON.Feature>) =>
+const max = (year: number) => (features: Array<GeoJSON.Feature>) =>
   pipe(
     features,
     A.map((feature) =>
@@ -57,30 +56,15 @@ const numericalRange = (year: number) => (features: Array<GeoJSON.Feature>) =>
       )
     ),
     A.filter((n) => n > 0),
-    (arr) => [Math.min(...arr), Math.max(...arr)]
+    (arr) => Math.max(...arr)
   );
 function App() {
   const [date, setDate] = useState<number>(1790);
 
-  const va = (statesData.features.find((f) => f.properties.name === "Virginia")
-    ?.geometry.coordinates[2][0] as unknown) as Array<[number, number]>;
-  const wva = statesData.features.find(
-    (f) => f.properties.name === "West Virginia"
-  )?.geometry.coordinates[0] as Array<[number, number]>;
-  const eqLatLon: Eq<[number, number]> = {
-    equals: (x: [number, number], y: [number, number]) =>
-      x[0] === y[0] && x[1] === y[1],
-  };
-  console.log(
-    statesData.features.find((f) => f.properties.name === "Virginia")?.geometry
-      .coordinates
-  );
-  console.log(va);
-  console.log(wva);
-  const uniqva = A.uniq(eqLatLon)([...va, ...wva]);
-  console.log(uniqva);
-  const getStyle = (feature?: GeoJSON.Feature) => ({
-    fillColor: getColor(feature?.properties?.density),
+  const getStyle = (max: number) => (year: number) => (
+    feature?: GeoJSON.Feature
+  ) => ({
+    fillColor: getColor(max)(feature?.properties?.census[year]),
     weight: 2,
     opacity: 1,
     color: "white",
@@ -96,13 +80,13 @@ function App() {
           feature.properties.admitted && feature.properties.admitted <= year
       ),
     };
-    pipe(data.features, numericalRange(year), console.log);
     map.eachLayer((layer) => {
       if (layer.getAttribution?.() === "US Census") {
         map.removeLayer(layer);
       }
     });
-    geoJSON(data, { style: getStyle, attribution: "US Census" }).addTo(map);
+    const style = pipe(data.features, max(year), getStyle, (f) => f(year));
+    geoJSON(data, { style, attribution: "US Census" }).addTo(map);
   };
 
   return (
@@ -125,12 +109,11 @@ function App() {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={[51.505, -0.09]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        <GeoJSON data={statesData} style={getStyle} attribution="US Census" />
+        <GeoJSON
+          data={statesData}
+          style={getStyle(691937)(1790)}
+          attribution="US Census"
+        />
         <MapConsumer>
           {(map) => (
             <div
@@ -138,7 +121,7 @@ function App() {
                 padding: 10,
                 position: "absolute",
                 bottom: "-1vh",
-                width: "100%",
+                width: "90%",
                 background: "black",
               }}
               onMouseOver={() => map.dragging.disable()}
