@@ -1,4 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as A from "fp-ts/Array";
+import * as O from "fp-ts/Option";
+import * as R from "fp-ts/Record";
 import {
   MapContainer,
   TileLayer,
@@ -11,6 +15,7 @@ import { geoJSON, GeoJSON as LeafletGeoJSON, Map as LeafletMap } from "leaflet";
 import "./App.css";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
+import { Eq } from "fp-ts/lib/Eq";
 
 const colors = [
   "#f7fbff",
@@ -41,9 +46,39 @@ const getColor = (n: number) =>
     ? colors[2]
     : colors[1];
 
+const numericalRange = (year: number) => (features: Array<GeoJSON.Feature>) =>
+  pipe(
+    features,
+    A.map((feature) =>
+      pipe(
+        feature.properties?.census,
+        R.lookup(String(year)),
+        O.getOrElse(() => 0)
+      )
+    ),
+    A.filter((n) => n > 0),
+    (arr) => [Math.min(...arr), Math.max(...arr)]
+  );
 function App() {
   const [date, setDate] = useState<number>(1790);
 
+  const va = (statesData.features.find((f) => f.properties.name === "Virginia")
+    ?.geometry.coordinates[2][0] as unknown) as Array<[number, number]>;
+  const wva = statesData.features.find(
+    (f) => f.properties.name === "West Virginia"
+  )?.geometry.coordinates[0] as Array<[number, number]>;
+  const eqLatLon: Eq<[number, number]> = {
+    equals: (x: [number, number], y: [number, number]) =>
+      x[0] === y[0] && x[1] === y[1],
+  };
+  console.log(
+    statesData.features.find((f) => f.properties.name === "Virginia")?.geometry
+      .coordinates
+  );
+  console.log(va);
+  console.log(wva);
+  const uniqva = A.uniq(eqLatLon)([...va, ...wva]);
+  console.log(uniqva);
   const getStyle = (feature?: GeoJSON.Feature) => ({
     fillColor: getColor(feature?.properties?.density),
     weight: 2,
@@ -52,16 +87,16 @@ function App() {
     dashArray: "3",
     fillOpacity: 0.7,
   });
-  const handleChange = (map: LeafletMap) => (d: number) => {
-    console.log({ d, map });
-    setDate(d);
+  const handleChange = (map: LeafletMap) => (year: number) => {
+    setDate(year);
     const data = {
       ...statesData,
       features: statesData.features.filter(
         (feature) =>
-          feature.properties.admitted && feature.properties.admitted <= d
+          feature.properties.admitted && feature.properties.admitted <= year
       ),
     };
+    pipe(data.features, numericalRange(year), console.log);
     map.eachLayer((layer) => {
       if (layer.getAttribution?.() === "US Census") {
         map.removeLayer(layer);
@@ -102,7 +137,7 @@ function App() {
               style={{
                 padding: 10,
                 position: "absolute",
-                bottom: "-10vh",
+                bottom: "-1vh",
                 width: "100%",
                 background: "black",
               }}
