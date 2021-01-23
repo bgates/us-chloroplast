@@ -127,7 +127,7 @@ function App() {
         O.fromNullable,
         O.fold(constVoid, (map) => handleChange(map)(date))
       ),
-    [population]
+    [population, handleChange, map]
   );
   const initialData = {
     ...statesData,
@@ -162,25 +162,14 @@ function App() {
             () => null,
             (map) => (
               <>
-                <div
-                  style={{
-                    padding: "10px 30px",
-                    position: "absolute",
-                    bottom: "0",
-                    width: "70%",
-                    zIndex: 1000,
-                    background: "#ccc",
-                  }}
+                <DateSlider
+                  min={1790}
+                  max={2010}
+                  value={date}
+                  onChange={handleChange(map)}
                   onMouseOver={() => map.dragging.disable()}
                   onMouseOut={() => map.dragging.enable()}
-                >
-                  <DateSlider
-                    min={1790}
-                    max={2010}
-                    value={date}
-                    onChange={handleChange(map)}
-                  />
-                </div>
+                />
                 <div
                   style={{
                     position: "absolute",
