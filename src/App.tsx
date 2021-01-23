@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as A from "fp-ts/Array";
+import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  GeoJSON,
-  MapConsumer,
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
 import { geoJSON, Map as LeafletMap } from "leaflet";
 import "./App.css";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
+import { constVoid } from "fp-ts/lib/function";
 
+type Population = "whole" | "free" | "enslaved";
 const colors = [
   "#f7fbff",
   "#deebf7",
@@ -45,97 +41,189 @@ const getColor = (max: number) => (n: number) =>
     ? colors[2]
     : colors[1];
 
-const max = (year: number) => (features: Array<GeoJSON.Feature>) =>
+const populationInYear = (census: Record<string, number>, year: number) =>
+  pipe(
+    census,
+    R.lookup(String(year)),
+    O.chain(O.fromNullable),
+    O.getOrElse(() => 0)
+  );
+const valueOfInterest = (feature: GeoJSON.Feature) => (
+  population: Population
+) => (year: number) =>
+  population === "whole"
+    ? populationInYear(feature.properties?.census, year)
+    : population === "enslaved"
+    ? populationInYear(feature.properties?.enslavedCensus, year)
+    : pipe(populationInYear(feature.properties?.census, year), (whole) =>
+        pipe(
+          populationInYear(feature.properties?.enslavedCensus, year),
+          (enslaved) => whole - enslaved
+        )
+      );
+
+const max = (population: Population) => (year: number) => (
+  features: Array<GeoJSON.Feature>
+) =>
   pipe(
     features,
     A.map((feature) =>
-      pipe(
-        feature.properties?.census,
-        R.lookup(String(year)),
-        O.getOrElse(() => 0)
-      )
+      pipe(valueOfInterest, ap(feature), ap(population), ap(year))
     ),
-    A.filter((n) => n > 0),
     (arr) => Math.max(...arr)
   );
 function App() {
+  const [map, setMap] = useState<LeafletMap>();
   const [date, setDate] = useState<number>(1790);
+  const [population, setPopulation] = useState<Population>("whole");
 
   const getStyle = (max: number) => (year: number) => (
     feature?: GeoJSON.Feature
-  ) => ({
-    fillColor: getColor(max)(feature?.properties?.census[year]),
-    weight: 2,
-    opacity: 1,
-    color: "white",
-    dashArray: "3",
-    fillOpacity: 0.7,
-  });
+  ) =>
+    feature
+      ? {
+          fillColor: getColor(max)(
+            pipe(valueOfInterest, ap(feature), ap(population), ap(year))
+          ),
+          weight: 2,
+          opacity: 1,
+          color: "white",
+          dashArray: "3",
+          fillOpacity: 0.7,
+        }
+      : {};
   const handleChange = (map: LeafletMap) => (year: number) => {
-    setDate(year);
-    const data = {
-      ...statesData,
-      features: statesData.features.filter(
-        (feature) =>
-          feature.properties.admitted && feature.properties.admitted <= year
-      ),
-    };
-    map.eachLayer((layer) => {
-      if (layer.getAttribution?.() === "US Census") {
-        map.removeLayer(layer);
-      }
-    });
-    const style = pipe(data.features, max(year), getStyle, (f) => f(year));
-    geoJSON(data, { style, attribution: "US Census" }).addTo(map);
+    if (year === 1870 && date === 1860 && population === "enslaved") {
+      setDate(year);
+      setPopulation("whole");
+    } else {
+      setDate(year);
+      const data = {
+        ...statesData,
+        features: statesData.features.filter(
+          (feature) =>
+            feature.properties.admitted && feature.properties.admitted <= year
+        ),
+      };
+      map.eachLayer((layer) => {
+        if (layer.getAttribution?.() === "US Census") {
+          map.removeLayer(layer);
+        }
+      });
+      const style = pipe(
+        data.features,
+        pipe(max, ap(population), ap(year)),
+        getStyle,
+        ap(year)
+      );
+      geoJSON(data, { style, attribution: "US Census" }).addTo(map);
+    }
   };
 
+  useEffect(
+    () =>
+      pipe(
+        map,
+        O.fromNullable,
+        O.fold(constVoid, (map) => handleChange(map)(date))
+      ),
+    [population]
+  );
+  const initialData = {
+    ...statesData,
+    features: statesData.features.filter(
+      (f) => f.properties.admitted && f.properties.admitted <= 1790
+    ),
+  };
   return (
     <div className="App">
       <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>Use the slider at the bottom of the map to see changes over time</p>
       </header>
-      <MapContainer center={[37.0, -96.5]} zoom={5} scrollWheelZoom={false}>
+      <MapContainer
+        center={[37.0, -96.5]}
+        zoom={5}
+        scrollWheelZoom={false}
+        whenCreated={setMap}
+      >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <GeoJSON
-          data={statesData}
+          data={initialData}
           style={getStyle(691937)(1790)}
           attribution="US Census"
         />
-        <MapConsumer>
-          {(map) => (
-            <div
-              style={{
-                padding: 10,
-                position: "absolute",
-                bottom: "-1vh",
-                width: "90%",
-                background: "black",
-              }}
-              onMouseOver={() => map.dragging.disable()}
-              onMouseOut={() => map.dragging.enable()}
-            >
-              <DateSlider
-                min={1790}
-                max={2010}
-                value={date}
-                onChange={handleChange(map)}
-              />
-            </div>
-          )}
-        </MapConsumer>
+        {pipe(
+          map,
+          O.fromNullable,
+          O.fold(
+            () => null,
+            (map) => (
+              <>
+                <div
+                  style={{
+                    padding: "10px 30px",
+                    position: "absolute",
+                    bottom: "0",
+                    width: "70%",
+                    zIndex: 1000,
+                    background: "#ccc",
+                  }}
+                  onMouseOver={() => map.dragging.disable()}
+                  onMouseOut={() => map.dragging.enable()}
+                >
+                  <DateSlider
+                    min={1790}
+                    max={2010}
+                    value={date}
+                    onChange={handleChange(map)}
+                  />
+                </div>
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "10vh",
+                    right: 16,
+                    background: "#ccc",
+                    zIndex: 1000,
+                  }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPopulation(e.target.value as Population)
+                  }
+                >
+                  <label>
+                    Whole population
+                    <input
+                      type="radio"
+                      name="population"
+                      value="whole"
+                      defaultChecked
+                    />
+                  </label>
+                  {date < 1870 ? (
+                    <>
+                      <label>
+                        Free population
+                        <input type="radio" name="population" value="free" />
+                      </label>
+                      <label>
+                        Enslaved population
+                        <input
+                          type="radio"
+                          name="population"
+                          value="enslaved"
+                        />
+                      </label>
+                    </>
+                  ) : null}
+                  {population}
+                </div>
+              </>
+            )
+          )
+        )}
       </MapContainer>
     </div>
   );

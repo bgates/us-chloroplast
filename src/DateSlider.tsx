@@ -13,7 +13,7 @@ type DateSliderProps = {
 const DateSlider = ({ value, min, max, onChange }: DateSliderProps) => {
   return (
     <Slider
-      style={{ margin: "1rem", zIndex: 100000 }}
+      style={{ zIndex: 100000 }}
       min={min}
       max={max}
       step={10}
