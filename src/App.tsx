@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as A from "fp-ts/Array";
+import { constVoid } from "fp-ts/lib/function";
 import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON } from "react-leaflet";
 import { geoJSON, Map as LeafletMap } from "leaflet";
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import tw, { styled } from "twin.macro";
 import "./App.css";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
-import { constVoid } from "fp-ts/lib/function";
 
 type Population = "whole" | "free" | "enslaved";
 const colors = [
@@ -72,11 +73,17 @@ const max = (population: Population) => (year: number) => (
     ),
     (arr) => Math.max(...arr)
   );
+
 function App() {
   const [map, setMap] = useState<LeafletMap>();
   const [date, setDate] = useState<number>(1790);
   const [population, setPopulation] = useState<Population>("whole");
 
+  const LabelContainer = tw.div`rounded-sm bg-gray-50 absolute bottom-8 right-2 z-1000 `;
+  const Label = styled.label(({ active }: { active: boolean }) => [
+    tw`block p-1 flex justify-between text-gray-700`,
+    active && tw`text-gray-900`,
+  ]);
   const getStyle = (max: number) => (year: number) => (
     feature?: GeoJSON.Feature
   ) =>
@@ -170,45 +177,43 @@ function App() {
                   onMouseOver={() => map.dragging.disable()}
                   onMouseOut={() => map.dragging.enable()}
                 />
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "10vh",
-                    right: 16,
-                    background: "#ccc",
-                    zIndex: 1000,
-                  }}
+                <LabelContainer
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setPopulation(e.target.value as Population)
                   }
                 >
-                  <label>
+                  <Label active={population === "whole"}>
                     Whole population
                     <input
                       type="radio"
                       name="population"
                       value="whole"
-                      defaultChecked
+                      checked={population === "whole"}
                     />
-                  </label>
+                  </Label>
                   {date < 1870 ? (
                     <>
-                      <label>
+                      <Label active={population === "free"}>
                         Free population
-                        <input type="radio" name="population" value="free" />
-                      </label>
-                      <label>
+                        <input
+                          type="radio"
+                          name="population"
+                          value="free"
+                          checked={population == "free"}
+                        />
+                      </Label>
+                      <Label active={population === "enslaved"}>
                         Enslaved population
                         <input
                           type="radio"
                           name="population"
                           value="enslaved"
+                          checked={population === "enslaved"}
                         />
-                      </label>
+                      </Label>
                     </>
                   ) : null}
-                  {population}
-                </div>
+                </LabelContainer>
               </>
             )
           )

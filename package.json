@@ -41,8 +41,8 @@
   },
   "babelMacros": {
     "twin": {
-        "config": "./tailwind.config.js",
-        "preset": "styled-components"
+      "config": "./tailwind.config.js",
+      "preset": "styled-components"
     }
   },
   "browserslist": {
@@ -58,6 +58,7 @@
     ]
   },
   "devDependencies": {
-    "@types/leaflet": "^1.5.21"
+    "@types/leaflet": "^1.5.21",
+    "@types/styled-components": "^5.1.7"
   }
 }

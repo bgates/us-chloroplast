@@ -13,7 +13,7 @@ type DateSliderProps = {
   onMouseOut: () => void;
 };
 
-const Container = tw.div`py-8 px-32 absolute bottom-0 z-1000 w-2/3 bg-gray-50`;
+const Container = tw.div`py-2 px-8 absolute bottom-2 left-2 rounded z-1000 w-2/3 bg-gray-50`;
 const DateSlider = ({
   value,
   min,
