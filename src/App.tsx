@@ -5,14 +5,8 @@ import { constVoid } from "fp-ts/lib/function";
 import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
-import {
-  GeoJSON as LeafletGeoJSON,
-  geoJSON,
-  Layer,
-  LeafletMouseEvent,
-  Map as LeafletMap,
-} from "leaflet";
-import { MapContainer, TileLayer, GeoJSON, LayersControl } from "react-leaflet";
+import { geoJSON, Layer, LeafletMouseEvent, Map as LeafletMap } from "leaflet";
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import tw, { styled } from "twin.macro";
 import "./App.css";
 import DateSlider from "./DateSlider";
