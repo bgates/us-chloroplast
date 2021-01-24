@@ -5,8 +5,14 @@ import { constVoid } from "fp-ts/lib/function";
 import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
-import { geoJSON, Map as LeafletMap } from "leaflet";
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import {
+  GeoJSON as LeafletGeoJSON,
+  geoJSON,
+  Layer,
+  LeafletMouseEvent,
+  Map as LeafletMap,
+} from "leaflet";
+import { MapContainer, TileLayer, GeoJSON, LayersControl } from "react-leaflet";
 import tw, { styled } from "twin.macro";
 import "./App.css";
 import DateSlider from "./DateSlider";
@@ -49,16 +55,16 @@ const populationInYear = (census: Record<string, number>, year: number) =>
     O.chain(O.fromNullable),
     O.getOrElse(() => 0)
   );
-const valueOfInterest = (feature: GeoJSON.Feature) => (
+const valueOfInterest = (properties: GeoJSON.GeoJsonProperties) => (
   population: Population
 ) => (year: number) =>
   population === "whole"
-    ? populationInYear(feature.properties?.census, year)
+    ? populationInYear(properties?.census, year)
     : population === "enslaved"
-    ? populationInYear(feature.properties?.enslavedCensus, year)
-    : pipe(populationInYear(feature.properties?.census, year), (whole) =>
+    ? populationInYear(properties?.enslavedCensus, year)
+    : pipe(populationInYear(properties?.census, year), (whole) =>
         pipe(
-          populationInYear(feature.properties?.enslavedCensus, year),
+          populationInYear(properties?.enslavedCensus, year),
           (enslaved) => whole - enslaved
         )
       );
@@ -69,7 +75,7 @@ const max = (population: Population) => (year: number) => (
   pipe(
     features,
     A.map((feature) =>
-      pipe(valueOfInterest, ap(feature), ap(population), ap(year))
+      pipe(valueOfInterest, ap(feature.properties), ap(population), ap(year))
     ),
     (arr) => Math.max(...arr)
   );
@@ -78,6 +84,9 @@ function App() {
   const [map, setMap] = useState<LeafletMap>();
   const [date, setDate] = useState<number>(1790);
   const [population, setPopulation] = useState<Population>("whole");
+  const [state, setState] = useState<any>(null);
+
+  const CurrentState = tw.div`rounded p-4 bg-gray-50 absolute top-1/2 right-2 z-1000 text-gray-900`;
 
   const LabelContainer = tw.div`rounded-sm bg-gray-50 absolute bottom-8 right-2 z-1000 `;
   const Label = styled.label(({ active }: { active: boolean }) => [
@@ -90,7 +99,12 @@ function App() {
     feature
       ? {
           fillColor: getColor(max)(
-            pipe(valueOfInterest, ap(feature), ap(population), ap(year))
+            pipe(
+              valueOfInterest,
+              ap(feature.properties),
+              ap(population),
+              ap(year)
+            )
           ),
           weight: 2,
           opacity: 1,
@@ -99,6 +113,37 @@ function App() {
           fillOpacity: 0.7,
         }
       : {};
+  const highlightFeature = (e: LeafletMouseEvent) => {
+    var layer = e.target;
+
+    layer.setStyle({
+      weight: 3,
+      color: "#666",
+      dashArray: "",
+      fillOpacity: 0.7,
+    });
+
+    layer.bringToFront();
+    setState(layer.feature.properties);
+  };
+  const resetHighlight = (e: LeafletMouseEvent) => {
+    var layer = e.target;
+
+    layer.setStyle({
+      weight: 2,
+      opacity: 1,
+      color: "white",
+      dashArray: "3",
+      fillOpacity: 0.7,
+    });
+    setState(null);
+  };
+  const onEachFeature = (feature: GeoJSON.Feature, layer: Layer) => {
+    layer.on({
+      mouseover: highlightFeature,
+      mouseout: resetHighlight,
+    });
+  };
   const handleChange = (map: LeafletMap) => (year: number) => {
     if (year === 1870 && date === 1860 && population === "enslaved") {
       setDate(year);
@@ -123,7 +168,9 @@ function App() {
         getStyle,
         ap(year)
       );
-      geoJSON(data, { style, attribution: "US Census" }).addTo(map);
+      geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
+        map
+      );
     }
   };
 
@@ -162,6 +209,13 @@ function App() {
           style={getStyle(691937)(1790)}
           attribution="US Census"
         />
+        <CurrentState>
+          <h2>Current State: {state ? state.name : ""}</h2>
+          <p>
+            {population} Population:{" "}
+            {state ? valueOfInterest(state)(population)(date) : ""}
+          </p>
+        </CurrentState>
         {pipe(
           map,
           O.fromNullable,
@@ -199,7 +253,7 @@ function App() {
                           type="radio"
                           name="population"
                           value="free"
-                          checked={population == "free"}
+                          checked={population === "free"}
                         />
                       </Label>
                       <Label active={population === "enslaved"}>

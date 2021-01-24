@@ -1,6 +1,6 @@
 {
   "name": "us-states",
-  "homepage": "bgates.github.io/us-chloroplast",
+  "homepage": "https://bgates.github.io/us-chloroplast",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
