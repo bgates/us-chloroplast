@@ -6,7 +6,16 @@
   --color-primary: #4ff0c9;
   --color-secondary: #172a45;
   --color-white-alt: #ccd6f6;
-}
+  --blue-100: #f7fbff;
+  --blue-200: #deebf7;
+  --blue-300: #c6dbef;
+  --blue-400: #9ecae1;
+  --blue-500: #6baed6;
+  --blue-600: #4292c6;
+  --blue-700: #2171b5;
+  --blue-800: #08519c;
+  --blue-900: #08306b;
+} /* https://colorbrewer2.org/#type=sequential&scheme=Blues&n=9 */
 
 body {
   margin: 0;

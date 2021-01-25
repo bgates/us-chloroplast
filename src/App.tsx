@@ -11,19 +11,54 @@ import tw, { styled } from "twin.macro";
 import "./App.css";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "./tailwind.config";
 
+const fullConfig = resolveConfig(tailwindConfig);
+const { blue } = fullConfig.theme.colors;
+console.log(blue);
+const initialData = {
+  ...statesData,
+  features: statesData.features.filter(
+    (f) => f.properties.admitted && f.properties.admitted <= 1790
+  ),
+};
+
+const LabelContainer = tw.div`rounded-sm bg-gray-50 absolute bottom-8 right-2 w-44 z-1000 `;
+const Label = styled.label(({ active }: { active: boolean }) => [
+  tw`block p-1 flex justify-between text-gray-700`,
+  active && tw`text-gray-900`,
+]);
 type Population = "whole" | "free" | "enslaved";
 const colors = [
-  "#f7fbff",
-  "#deebf7",
-  "#c6dbef",
-  "#9ecae1",
-  "#6baed6",
-  "#4292c6",
-  "#2171b5",
-  "#08519c",
-  "#08306b",
-]; // https://colorbrewer2.org/#type=sequential&scheme=Blues&n=9
+  blue["map-100"],
+  blue["map-200"],
+  blue["map-300"],
+  blue["map-400"],
+  blue["map-500"],
+  blue["map-600"],
+  blue["map-700"],
+  blue["map-800"],
+  blue["map-900"],
+];
+
+const baseStyle = {
+  weight: 2,
+  opacity: 1,
+  color: "white",
+  dashArray: "3",
+  fillOpacity: 0.9,
+};
+const highlightStyle = {
+  weight: 3,
+  color: "#666",
+  dashArray: "",
+};
+const formatNumber = (num: number) =>
+  num
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    .padStart(11);
 
 const getColor = (max: number) => (n: number) =>
   n > 0.9 * max
@@ -42,6 +77,22 @@ const getColor = (max: number) => (n: number) =>
     ? colors[2]
     : colors[1];
 
+const compareToNullable = (
+  year1: number | undefined,
+  year2: number,
+  comparison: (y1: number, y2: number) => boolean,
+  defaultValue: boolean = false
+) =>
+  pipe(
+    year1,
+    O.fromNullable,
+    O.map((y1) => comparison(y1, year2)),
+    O.getOrElse(() => defaultValue)
+  );
+const showState = (year: number) => (feature: typeof statesData.features[0]) =>
+  compareToNullable(feature.properties.admitted, year, (y1, y2) => y1 <= y2) &&
+  compareToNullable(feature.properties.until, year, (y1, y2) => y1 > y2, true);
+
 const populationInYear = (census: Record<string, number>, year: number) =>
   pipe(
     census,
@@ -49,6 +100,7 @@ const populationInYear = (census: Record<string, number>, year: number) =>
     O.chain(O.fromNullable),
     O.getOrElse(() => 0)
   );
+
 const valueOfInterest = (properties: GeoJSON.GeoJsonProperties) => (
   population: Population
 ) => (year: number) =>
@@ -63,7 +115,7 @@ const valueOfInterest = (properties: GeoJSON.GeoJsonProperties) => (
         )
       );
 
-const max = (population: Population) => (year: number) => (
+const getMax = (population: Population) => (year: number) => (
   features: Array<GeoJSON.Feature>
 ) =>
   pipe(
@@ -74,62 +126,121 @@ const max = (population: Population) => (year: number) => (
     (arr) => Math.max(...arr)
   );
 
-function App() {
+const getStyle = (max: number) => (population: Population) => (
+  year: number
+) => (feature?: GeoJSON.Feature) =>
+  feature
+    ? {
+        ...baseStyle,
+        fillColor: getColor(max)(
+          pipe(
+            valueOfInterest,
+            ap(feature.properties),
+            ap(population),
+            ap(year)
+          )
+        ),
+      }
+    : {};
+console.log(blue);
+const InfoBox = tw.div`rounded p-4 pt-0 bg-gray-50 absolute top-1/2 right-2 w-52 z-1000 text-gray-900`;
+const CurrentState = tw.div`pt-0`;
+const StateName = tw.h2`text-lg p-0 m-0 text-gray-600`;
+const StateDatum = tw.div`flex justify-between`;
+type StateSummaryProps = {
+  state?: GeoJSON.GeoJsonProperties;
+  population: Population;
+  date: number;
+};
+const capitalize = (s: string) => `${s[0].toLocaleUpperCase()}${s.slice(1)}`;
+const StateSummary = ({ state, population, date }: StateSummaryProps) => (
+  <CurrentState>
+    {pipe(
+      state,
+      O.fromNullable,
+      O.fold(
+        () => <h2 tw="pt-2">Hover over a state to see its population</h2>,
+        (s) => (
+          <>
+            <StateName>{s.name}</StateName>
+            <dl>
+              <StateDatum>
+                <dt>{capitalize(population)} Population: </dt>
+                <dd>{formatNumber(valueOfInterest(s)(population)(date))}</dd>
+              </StateDatum>
+            </dl>
+          </>
+        )
+      )
+    )}
+  </CurrentState>
+);
+const LegendContainer = tw.div`text-xs`;
+const Year = StateName;
+const ColorValue = ({
+  n,
+  fraction,
+  comparator = String.fromCharCode(62),
+}: {
+  n: number;
+  fraction: number;
+  comparator?: string;
+}) => (
+  <StateDatum>
+    <dt tw="font-mono whitespace-pre">
+      {comparator} {formatNumber(Math.round(n))}
+    </dt>
+    {fraction === 0.9 ? (
+      <dd tw="bg-blue-map-900 w-8 bg-opacity-70"></dd>
+    ) : fraction === 0.5 ? (
+      <dd tw="bg-blue-map-800 w-8 bg-opacity-70"></dd>
+    ) : fraction === 0.2 ? (
+      <dd tw="bg-blue-map-700 w-8 bg-opacity-70"></dd>
+    ) : fraction === 0.1 ? (
+      <dd tw="bg-blue-map-600 w-8 bg-opacity-70"></dd>
+    ) : fraction === 0.05 ? (
+      <dd tw="bg-blue-map-500 w-8 bg-opacity-70"></dd>
+    ) : fraction === 0.02 ? (
+      <dd tw="bg-blue-map-400 w-8 bg-opacity-70"></dd>
+    ) : fraction === 0.01 && comparator === "&gt;" ? (
+      <dd tw="bg-blue-map-300 w-8 bg-opacity-70"></dd>
+    ) : (
+      <dd tw="bg-blue-map-200 w-8 bg-opacity-70"></dd>
+    )}
+  </StateDatum>
+);
+const Legend = ({ max, year }: { max: number; year: number }) => (
+  <LegendContainer>
+    <Year>{year}</Year>
+    <dl>
+      <ColorValue n={max * 0.9} fraction={0.9} />
+      <ColorValue n={max * 0.5} fraction={0.5} />
+      <ColorValue n={max * 0.2} fraction={0.2} />
+      <ColorValue n={max * 0.1} fraction={0.1} />
+      <ColorValue n={max * 0.05} fraction={0.05} />
+      <ColorValue n={max * 0.02} fraction={0.02} />
+      <ColorValue n={max * 0.01} fraction={0.01} />
+      <ColorValue n={max * 0.01} fraction={0.01} comparator="&lt;" />
+    </dl>
+  </LegendContainer>
+);
+const App = () => {
+  const initialLargestState = 691937;
   const [map, setMap] = useState<LeafletMap>();
   const [date, setDate] = useState<number>(1790);
   const [population, setPopulation] = useState<Population>("whole");
+  const [largestState, setLargestState] = useState(initialLargestState);
   const [state, setState] = useState<any>(null);
 
-  const CurrentState = tw.div`rounded p-4 bg-gray-50 absolute top-1/2 right-2 z-1000 text-gray-900`;
-
-  const LabelContainer = tw.div`rounded-sm bg-gray-50 absolute bottom-8 right-2 z-1000 `;
-  const Label = styled.label(({ active }: { active: boolean }) => [
-    tw`block p-1 flex justify-between text-gray-700`,
-    active && tw`text-gray-900`,
-  ]);
-  const getStyle = (max: number) => (year: number) => (
-    feature?: GeoJSON.Feature
-  ) =>
-    feature
-      ? {
-          fillColor: getColor(max)(
-            pipe(
-              valueOfInterest,
-              ap(feature.properties),
-              ap(population),
-              ap(year)
-            )
-          ),
-          weight: 2,
-          opacity: 1,
-          color: "white",
-          dashArray: "3",
-          fillOpacity: 0.7,
-        }
-      : {};
   const highlightFeature = (e: LeafletMouseEvent) => {
-    var layer = e.target;
-
-    layer.setStyle({
-      weight: 3,
-      color: "#666",
-      dashArray: "",
-      fillOpacity: 0.7,
-    });
-
+    const layer = e.target;
+    layer.setStyle(highlightStyle);
     layer.bringToFront();
     setState(layer.feature.properties);
   };
   const resetHighlight = (e: LeafletMouseEvent) => {
-    var layer = e.target;
-
-    layer.setStyle({
-      weight: 2,
-      opacity: 1,
-      color: "white",
-      dashArray: "3",
-      fillOpacity: 0.7,
-    });
+    const layer = e.target;
+    layer.setStyle(baseStyle);
     setState(null);
   };
   const onEachFeature = (feature: GeoJSON.Feature, layer: Layer) => {
@@ -146,22 +257,16 @@ function App() {
       setDate(year);
       const data = {
         ...statesData,
-        features: statesData.features.filter(
-          (feature) =>
-            feature.properties.admitted && feature.properties.admitted <= year
-        ),
+        features: statesData.features.filter(showState(year)),
       };
       map.eachLayer((layer) => {
         if (layer.getAttribution?.() === "US Census") {
           map.removeLayer(layer);
         }
       });
-      const style = pipe(
-        data.features,
-        pipe(max, ap(population), ap(year)),
-        getStyle,
-        ap(year)
-      );
+      const max = pipe(data.features, pipe(getMax, ap(population), ap(year)));
+      setLargestState(max);
+      const style = pipe(max, getStyle, ap(population), ap(year));
       geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
         map
       );
@@ -177,12 +282,6 @@ function App() {
       ),
     [population, handleChange, map]
   );
-  const initialData = {
-    ...statesData,
-    features: statesData.features.filter(
-      (f) => f.properties.admitted && f.properties.admitted <= 1790
-    ),
-  };
   return (
     <div className="App">
       <header className="App-header">
@@ -190,7 +289,7 @@ function App() {
       </header>
       <MapContainer
         center={[37.0, -96.5]}
-        zoom={5}
+        zoom={4}
         scrollWheelZoom={false}
         whenCreated={setMap}
       >
@@ -200,16 +299,13 @@ function App() {
         />
         <GeoJSON
           data={initialData}
-          style={getStyle(691937)(1790)}
+          style={getStyle(initialLargestState)("whole")(1790)}
           attribution="US Census"
         />
-        <CurrentState>
-          <h2>Current State: {state ? state.name : ""}</h2>
-          <p>
-            {population} Population:{" "}
-            {state ? valueOfInterest(state)(population)(date) : ""}
-          </p>
-        </CurrentState>
+        <InfoBox>
+          <Legend max={largestState} year={date} />
+          <StateSummary state={state} population={population} date={date} />
+        </InfoBox>
         {pipe(
           map,
           O.fromNullable,
@@ -269,6 +365,6 @@ function App() {
       </MapContainer>
     </div>
   );
-}
+};
 
 export default App;

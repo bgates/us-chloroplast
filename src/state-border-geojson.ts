@@ -3103,6 +3103,7 @@ export const statesData = {
       properties: {
         name: "Massachusetts",
         admitted: 1788,
+        until: 1820,
         density: 840.2,
         census: {
           1790: 475327,
