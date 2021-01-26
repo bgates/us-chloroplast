@@ -6,7 +6,6 @@ export const statesData = {
       id: "01",
       properties: {
         name: "Alabama",
-        density: 94.65,
         admitted: 1819,
         census: {
           1800: 1250,
@@ -88,7 +87,6 @@ export const statesData = {
       id: "02",
       properties: {
         name: "Alaska",
-        density: 1.264,
         admitted: 1959,
         census: {
           1890: 33426,
@@ -1348,7 +1346,6 @@ export const statesData = {
       properties: {
         name: "Arizona",
         admitted: 1912,
-        density: 57.05,
         census: {
           1870: 9658,
           1880: 40440,
@@ -1413,7 +1410,6 @@ export const statesData = {
       properties: {
         name: "Arkansas",
         admitted: 1836,
-        density: 56.43,
         census: {
           1810: 1062,
           1820: 14273,
@@ -1496,7 +1492,6 @@ export const statesData = {
       id: "06",
       properties: {
         name: "California",
-        density: 241.7,
         admitted: 1850,
         census: {
           1850: 92597,
@@ -1624,7 +1619,6 @@ export const statesData = {
       id: "08",
       properties: {
         name: "Colorado",
-        density: 49.33,
         admitted: 1876,
         census: {
           1860: 34277,
@@ -1675,7 +1669,6 @@ export const statesData = {
       properties: {
         name: "Connecticut",
         admitted: 1788,
-        density: 739.1,
         census: {
           1790: 237946,
           1800: 251002,
@@ -1742,7 +1735,6 @@ export const statesData = {
       properties: {
         name: "Delaware",
         admitted: 1787,
-        density: 464.3,
         census: {
           1790: 59096,
           1800: 64273,
@@ -1805,7 +1797,6 @@ export const statesData = {
       id: "11",
       properties: {
         name: "District of Columbia",
-        density: 10065,
         admitted: 1790,
         census: {
           1800: 8144,
@@ -1860,7 +1851,6 @@ export const statesData = {
       properties: {
         name: "Florida",
         admitted: 1845,
-        density: 353.4,
         census: {
           1830: 34730,
           1840: 54477,
@@ -1981,7 +1971,6 @@ export const statesData = {
       properties: {
         name: "Georgia",
         admitted: 1788,
-        density: 169.5,
         census: {
           1790: 82548,
           1800: 162686,
@@ -2083,7 +2072,6 @@ export const statesData = {
       properties: {
         name: "Hawaii",
         admitted: 1959,
-        density: 214.1,
         census: {
           1900: 154001,
           1910: 191909,
@@ -2180,7 +2168,6 @@ export const statesData = {
       properties: {
         name: "Idaho",
         admitted: 1890,
-        density: 19.15,
         census: {
           1870: 14999,
           1880: 32610,
@@ -2279,7 +2266,6 @@ export const statesData = {
       properties: {
         name: "Illinois",
         admitted: 1818,
-        density: 231.5,
         census: {
           1800: 2458,
           1810: 12282,
@@ -2395,7 +2381,6 @@ export const statesData = {
       properties: {
         name: "Indiana",
         admitted: 1816,
-        density: 181.7,
         census: {
           1800: 2632,
           1810: 24520,
@@ -2490,7 +2475,6 @@ export const statesData = {
       properties: {
         name: "Iowa",
         admitted: 1846,
-        density: 54.81,
         census: {
           1840: 43112,
           1850: 192214,
@@ -2579,7 +2563,6 @@ export const statesData = {
       properties: {
         name: "Kansas",
         admitted: 1861,
-        density: 35.09,
         census: {
           1860: 107206,
           1870: 364399,
@@ -2629,9 +2612,7 @@ export const statesData = {
       properties: {
         name: "Kentucky",
         admitted: 1792,
-        density: 110,
         census: {
-          1790: 73677,
           1800: 220959,
           1810: 406511,
           1820: 564317,
@@ -2656,7 +2637,6 @@ export const statesData = {
           2010: 4339367,
         },
         enslavedCensus: {
-          1790: 12430,
           1800: 40343,
           1810: 80561,
           1820: 126732,
@@ -2755,7 +2735,6 @@ export const statesData = {
       properties: {
         name: "Louisiana",
         admitted: 1812,
-        density: 105,
         census: {
           1810: 76556,
           1820: 153407,
@@ -2878,7 +2857,6 @@ export const statesData = {
       properties: {
         name: "Maine",
         admitted: 1820,
-        density: 43.04,
         census: {
           1820: 298335,
           1830: 399455,
@@ -2982,7 +2960,6 @@ export const statesData = {
       properties: {
         name: "Maryland",
         admitted: 1788,
-        density: 596.3,
         census: {
           1790: 319728,
           1800: 341548,
@@ -3104,7 +3081,6 @@ export const statesData = {
         name: "Massachusetts",
         admitted: 1788,
         until: 1820,
-        density: 840.2,
         census: {
           1790: 475327,
           1800: 574564,
@@ -3235,7 +3211,6 @@ export const statesData = {
       properties: {
         name: "Massachusetts",
         admitted: 1820,
-        density: 840.2,
         census: {
           1790: 378787,
           1800: 422845,
@@ -3314,7 +3289,6 @@ export const statesData = {
       properties: {
         name: "Michigan",
         admitted: 1837,
-        density: 173.9,
         census: {
           1800: 3757,
           1810: 4762,
@@ -3525,7 +3499,6 @@ export const statesData = {
       properties: {
         name: "Minnesota",
         admitted: 1858,
-        density: 67.14,
         census: {
           1850: 6077,
           1860: 172023,
@@ -3643,7 +3616,6 @@ export const statesData = {
       properties: {
         name: "Mississippi",
         admitted: 1817,
-        density: 63.5,
         census: {
           1800: 7600,
           1810: 31306,
@@ -3738,7 +3710,6 @@ export const statesData = {
       properties: {
         name: "Missouri",
         admitted: 1821,
-        density: 87.26,
         census: {
           1810: 19783,
           1820: 66586,
@@ -3838,7 +3809,6 @@ export const statesData = {
       properties: {
         name: "Montana",
         admitted: 1889,
-        density: 6.858,
         census: {
           1870: 20595,
           1880: 39159,
@@ -3923,7 +3893,6 @@ export const statesData = {
       properties: {
         name: "Nebraska",
         admitted: 1867,
-        density: 23.97,
         census: {
           1860: 28841,
           1870: 122993,
@@ -3989,7 +3958,6 @@ export const statesData = {
       properties: {
         name: "Nevada",
         admitted: 1864,
-        density: 24.8,
         census: {
           1860: 6857,
           1870: 42491,
@@ -4044,7 +4012,6 @@ export const statesData = {
       properties: {
         name: "New Hampshire",
         admitted: 1788,
-        density: 147,
         census: {
           1790: 141885,
           1800: 183858,
@@ -4122,7 +4089,6 @@ export const statesData = {
       properties: {
         name: "New Jersey",
         admitted: 1787,
-        density: 1189,
         census: {
           1790: 184139,
           1800: 211149,
@@ -4204,7 +4170,6 @@ export const statesData = {
       id: "35",
       properties: {
         name: "New Mexico",
-        density: 17.16,
         admitted: 1912,
         census: {
           1850: 61547,
@@ -4257,7 +4222,6 @@ export const statesData = {
       properties: {
         name: "New York",
         admitted: 1788,
-        density: 412.3,
         census: {
           1790: 340120,
           1800: 586050,
@@ -4375,7 +4339,6 @@ export const statesData = {
       properties: {
         name: "North Carolina",
         admitted: 1789,
-        density: 198.2,
         census: {
           1790: 393751,
           1800: 478103,
@@ -4487,7 +4450,6 @@ export const statesData = {
       properties: {
         name: "North Dakota",
         admitted: 1889,
-        density: 9.916,
         census: {
           1870: 2405,
           1880: 36909,
@@ -4536,7 +4498,6 @@ export const statesData = {
       properties: {
         name: "Ohio",
         admitted: 1803,
-        density: 281.9,
         census: {
           1800: 42159,
           1810: 230760,
@@ -4629,7 +4590,6 @@ export const statesData = {
       properties: {
         name: "Oklahoma",
         admitted: 1907,
-        density: 55.22,
         census: {
           1890: 258657,
           1900: 790391,
@@ -4705,7 +4665,6 @@ export const statesData = {
       properties: {
         name: "Oregon",
         admitted: 1859,
-        density: 40.33,
         census: {
           1850: 12093,
           1860: 52465,
@@ -4796,7 +4755,6 @@ export const statesData = {
       properties: {
         name: "Pennsylvania",
         admitted: 1787,
-        density: 284.3,
         census: {
           1790: 434373,
           1800: 602545,
@@ -4879,7 +4837,6 @@ export const statesData = {
       properties: {
         name: "Rhode Island",
         admitted: 1790,
-        density: 1006,
         census: {
           1790: 68825,
           1800: 69122,
@@ -4950,7 +4907,6 @@ export const statesData = {
       properties: {
         name: "South Carolina",
         admitted: 1788,
-        density: 155.4,
         census: {
           1790: 249073,
           1800: 345591,
@@ -5045,7 +5001,6 @@ export const statesData = {
       properties: {
         name: "South Dakota",
         admitted: 1889,
-        density: 98.07,
         census: {
           1860: 4837,
           1870: 11776,
@@ -5108,7 +5063,6 @@ export const statesData = {
       properties: {
         name: "Tennessee",
         admitted: 1796,
-        density: 88.08,
         census: {
           1790: 35691,
           1800: 105602,
@@ -5202,7 +5156,6 @@ export const statesData = {
       properties: {
         name: "Texas",
         admitted: 1845,
-        density: 98.07,
         census: {
           1850: 212592,
           1860: 604215,
@@ -5393,7 +5346,6 @@ export const statesData = {
       properties: {
         name: "Utah",
         admitted: 1896,
-        density: 34.3,
         census: {
           1850: 11380,
           1860: 40273,
@@ -5444,7 +5396,6 @@ export const statesData = {
       properties: {
         name: "Vermont",
         admitted: 1791,
-        density: 67.73,
         census: {
           1790: 85425,
           1800: 154465,
@@ -5509,13 +5460,189 @@ export const statesData = {
     },
     {
       type: "Feature" as const,
-      id: "151",
+      id: "152",
       properties: {
         name: "Virginia",
         admitted: 1788,
-        density: 204.5,
+        until: 1792,
         census: {
-          1790: 691937,
+          1790: 747610,
+        },
+        enslavedCensus: {
+          1790: 292627,
+        },
+      },
+      geometry: {
+        type: "MultiPolygon" as const,
+        coordinates: [
+          [
+            [
+              [-75.397659, 38.013497],
+              [-75.244304, 38.029928],
+              [-75.375751, 37.860142],
+              [-75.512674, 37.799896],
+              [-75.594828, 37.569865],
+              [-75.802952, 37.197433],
+              [-75.972737, 37.120755],
+              [-76.027507, 37.257679],
+              [-75.939876, 37.564388],
+              [-75.671506, 37.95325],
+              [-75.397659, 38.013497],
+            ],
+          ],
+          [
+            [
+              [-76.016553, 37.95325],
+              [-75.994645, 37.95325],
+              [-76.043938, 37.95325],
+              [-76.016553, 37.95325],
+            ],
+          ],
+          [
+            [
+              [-77.82942, 39.130793],
+              [-77.719881, 39.322485],
+              [-77.566527, 39.306055],
+              [-77.456988, 39.223901],
+              [-77.456988, 39.076023],
+              [-77.248864, 39.026731],
+              [-77.117418, 38.933623],
+              [-77.040741, 38.791222],
+              [-77.128372, 38.632391],
+              [-77.248864, 38.588575],
+              [-77.325542, 38.446175],
+              [-77.281726, 38.342113],
+              [-77.013356, 38.374975],
+              [-76.964064, 38.216144],
+              [-76.613539, 38.15042],
+              [-76.514954, 38.024451],
+              [-76.235631, 37.887527],
+              [-76.3616, 37.608203],
+              [-76.246584, 37.389126],
+              [-76.383508, 37.285064],
+              [-76.399939, 37.159094],
+              [-76.273969, 37.082417],
+              [-76.410893, 36.961924],
+              [-76.619016, 37.120755],
+              [-76.668309, 37.065986],
+              [-76.48757, 36.95097],
+              [-75.994645, 36.923586],
+              [-75.868676, 36.551154],
+              [-79.510841, 36.5402],
+              [-80.294043, 36.545677],
+              [-80.978661, 36.562108],
+              [-81.679709, 36.589492],
+              //[-83.673316, 36.600446],
+
+              [-83.673316, 36.600446], // se corner
+              [-83.689746, 36.584015],
+              [-84.544149, 36.594969],
+              [-85.289013, 36.627831],
+              [-85.486183, 36.616877],
+              [-86.592525, 36.655216],
+              [-87.852221, 36.633308],
+              [-88.071299, 36.677123],
+              [-88.054868, 36.496384],
+              [-89.298133, 36.507338],
+              [-89.418626, 36.496384], // sw corner
+
+              [-89.363857, 36.622354],
+              [-89.215979, 36.578538],
+              [-89.133825, 36.983832],
+              [-89.183118, 37.038601],
+              [-89.029763, 37.213863],
+              [-88.914747, 37.224817],
+              [-88.547792, 37.071463],
+              [-88.421823, 37.153617],
+              [-88.514931, 37.285064],
+              [-88.476592, 37.389126],
+              [-88.065822, 37.482234],
+              [-88.15893, 37.657496],
+              [-88.027483, 37.799896],
+              [-87.934375, 37.893004],
+              [-87.682436, 37.903958],
+              [-87.600282, 37.975158],
+              [-87.512651, 37.903958],
+              [-87.381204, 37.93682],
+              [-87.129265, 37.788942],
+              [-87.047111, 37.893004],
+              [-86.795172, 37.991589],
+              [-86.729448, 37.893004],
+              [-86.504894, 37.931343],
+              [-86.521325, 38.040881],
+              [-86.302247, 38.166851],
+              [-86.263908, 38.051835],
+              [-86.039354, 37.958727],
+              [-85.924338, 38.024451],
+              [-85.83123, 38.27639],
+              [-85.655968, 38.325682],
+              [-85.590245, 38.451652],
+              [-85.42046, 38.533806],
+              [-85.431413, 38.730976],
+              [-85.173997, 38.68716],
+              [-84.987781, 38.780268],
+              [-84.812519, 38.785745],
+              [-84.894673, 39.059592],
+              [-84.817996, 39.103408],
+              [-84.43461, 39.103408],
+              [-84.231963, 38.895284],
+              [-84.215533, 38.807653],
+              [-83.903347, 38.769315],
+              [-83.678792, 38.632391],
+              [-83.519961, 38.703591],
+              [-83.142052, 38.626914],
+              [-83.032514, 38.725499],
+              [-82.890113, 38.758361],
+              [-82.846298, 38.588575],
+              [-82.731282, 38.561191],
+              [-82.594358, 38.424267], // huntington wv
+
+              // [-82.594358, 38.424267],
+              [-82.331465, 38.446175],
+              [-82.293127, 38.577622],
+              [-82.172634, 38.632391],
+              [-82.221926, 38.785745],
+              [-82.03571, 39.026731],
+              [-81.887833, 38.873376],
+              [-81.783771, 38.966484],
+              [-81.811156, 39.0815],
+              [-81.685186, 39.273193],
+              [-81.57017, 39.267716],
+              [-81.455155, 39.410117],
+              [-81.345616, 39.344393],
+              [-81.219646, 39.388209],
+              [-80.830783, 39.711348],
+              [-80.737675, 40.078303],
+              [-80.600752, 40.319289],
+              [-80.595275, 40.472643],
+              [-80.666475, 40.582182],
+              [-80.518598, 40.636951],
+              [-80.518598, 39.722302],
+              [-79.477979, 39.722302],
+              [-79.488933, 39.20747],
+              [-79.291763, 39.300578],
+              [-79.094593, 39.470363],
+              [-78.963147, 39.437501],
+              [-78.765977, 39.585379],
+              [-78.470222, 39.514178],
+              [-78.431884, 39.623717],
+              [-78.267575, 39.61824],
+              [-78.174467, 39.694917],
+              [-78.004682, 39.601809],
+              [-77.834897, 39.601809],
+            ],
+          ],
+        ],
+      },
+    },
+    {
+      type: "Feature" as const,
+      id: "151",
+      properties: {
+        name: "Virginia",
+        admitted: 1792,
+        until: 1863,
+        census: {
           1800: 807557,
           1810: 877683,
           1820: 938261,
@@ -5525,7 +5652,6 @@ export const statesData = {
           1860: 1219630,
         },
         enslavedCensus: {
-          1790: 292627,
           1800: 346671,
           1810: 394357,
           1820: 427055,
@@ -5653,7 +5779,6 @@ export const statesData = {
       properties: {
         name: "Virginia",
         admitted: 1863,
-        density: 204.5,
         census: {
           1870: 1225163,
           1880: 1512565,
@@ -5776,7 +5901,6 @@ export const statesData = {
       properties: {
         name: "Washington",
         admitted: 1889,
-        density: 102.6,
         census: {
           1850: 1201,
           1860: 11594,
@@ -5893,7 +6017,6 @@ export const statesData = {
       properties: {
         name: "West Virginia",
         admitted: 1863,
-        density: 77.06,
         census: {
           1790: 55873,
           1800: 78592,
@@ -5999,7 +6122,6 @@ export const statesData = {
       properties: {
         name: "Wisconsin",
         admitted: 1848,
-        density: 105.2,
         census: {
           1820: 1444,
           1830: 3635,
@@ -6116,7 +6238,6 @@ export const statesData = {
       properties: {
         name: "Wyoming",
         admitted: 1890,
-        density: 5.851,
         census: {
           1870: 9118,
           1880: 20789,
@@ -6161,7 +6282,6 @@ export const statesData = {
       id: "72",
       properties: {
         name: "Puerto Rico",
-        density: 1082,
         census: {
           1910: 1118012,
           1920: 1299809,
