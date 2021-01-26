@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/us-chloroplast/static/css/main.c5a7b1a8.chunk.css",
-    "main.js": "/us-chloroplast/static/js/main.c83f6208.chunk.js",
-    "main.js.map": "/us-chloroplast/static/js/main.c83f6208.chunk.js.map",
+    "main.css": "/us-chloroplast/static/css/main.c5c18710.chunk.css",
+    "main.js": "/us-chloroplast/static/js/main.e5a5bedf.chunk.js",
+    "main.js.map": "/us-chloroplast/static/js/main.e5a5bedf.chunk.js.map",
     "runtime-main.js": "/us-chloroplast/static/js/runtime-main.b3bf48ab.js",
     "runtime-main.js.map": "/us-chloroplast/static/js/runtime-main.b3bf48ab.js.map",
     "static/css/2.5c1bdb35.chunk.css": "/us-chloroplast/static/css/2.5c1bdb35.chunk.css",
@@ -12,14 +12,14 @@
     "static/js/3.fb88f29f.chunk.js.map": "/us-chloroplast/static/js/3.fb88f29f.chunk.js.map",
     "index.html": "/us-chloroplast/index.html",
     "static/css/2.5c1bdb35.chunk.css.map": "/us-chloroplast/static/css/2.5c1bdb35.chunk.css.map",
-    "static/css/main.c5a7b1a8.chunk.css.map": "/us-chloroplast/static/css/main.c5a7b1a8.chunk.css.map",
+    "static/css/main.c5c18710.chunk.css.map": "/us-chloroplast/static/css/main.c5c18710.chunk.css.map",
     "static/js/2.c236d093.chunk.js.LICENSE.txt": "/us-chloroplast/static/js/2.c236d093.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.b3bf48ab.js",
     "static/css/2.5c1bdb35.chunk.css",
     "static/js/2.c236d093.chunk.js",
-    "static/css/main.c5a7b1a8.chunk.css",
-    "static/js/main.c83f6208.chunk.js"
+    "static/css/main.c5c18710.chunk.css",
+    "static/js/main.e5a5bedf.chunk.js"
   ]
 }
