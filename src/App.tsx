@@ -7,16 +7,18 @@ import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import { geoJSON, Layer, LeafletMouseEvent, Map as LeafletMap } from "leaflet";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
-import tw, { styled } from "twin.macro";
+import tw from "twin.macro";
 import "./App.css";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "./tailwind.config";
+import { FreeVsEnslavedControl } from "./FreeVsEnslavedControl";
+import { capitalize } from "./utils";
 
 const fullConfig = resolveConfig(tailwindConfig);
 const { blue } = fullConfig.theme.colors;
-console.log(blue);
+
 const initialData = {
   ...statesData,
   features: statesData.features.filter(
@@ -24,11 +26,6 @@ const initialData = {
   ),
 };
 
-const LabelContainer = tw.div`rounded-sm bg-gray-50 absolute bottom-8 right-2 w-44 z-1000 `;
-const Label = styled.label(({ active }: { active: boolean }) => [
-  tw`block p-1 flex justify-between text-gray-700`,
-  active && tw`text-gray-900`,
-]);
 type Population = "whole" | "free" | "enslaved";
 const colors = [
   blue["map-100"],
@@ -142,7 +139,7 @@ const getStyle = (max: number) => (population: Population) => (
         ),
       }
     : {};
-console.log(blue);
+
 const InfoBox = tw.div`rounded p-4 pt-0 bg-gray-50 absolute top-1/2 right-2 w-52 z-1000 text-gray-900`;
 const CurrentState = tw.div`pt-0`;
 const StateName = tw.h2`text-lg p-0 m-0 text-gray-600`;
@@ -152,7 +149,6 @@ type StateSummaryProps = {
   population: Population;
   date: number;
 };
-const capitalize = (s: string) => `${s[0].toLocaleUpperCase()}${s.slice(1)}`;
 const StateSummary = ({ state, population, date }: StateSummaryProps) => (
   <CurrentState>
     {pipe(
@@ -321,43 +317,11 @@ const App = () => {
                   onMouseOver={() => map.dragging.disable()}
                   onMouseOut={() => map.dragging.enable()}
                 />
-                <LabelContainer
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPopulation(e.target.value as Population)
-                  }
-                >
-                  <Label active={population === "whole"}>
-                    Whole population
-                    <input
-                      type="radio"
-                      name="population"
-                      value="whole"
-                      checked={population === "whole"}
-                    />
-                  </Label>
-                  {date < 1870 ? (
-                    <>
-                      <Label active={population === "free"}>
-                        Free population
-                        <input
-                          type="radio"
-                          name="population"
-                          value="free"
-                          checked={population === "free"}
-                        />
-                      </Label>
-                      <Label active={population === "enslaved"}>
-                        Enslaved population
-                        <input
-                          type="radio"
-                          name="population"
-                          value="enslaved"
-                          checked={population === "enslaved"}
-                        />
-                      </Label>
-                    </>
-                  ) : null}
-                </LabelContainer>
+                <FreeVsEnslavedControl
+                  handleChange={setPopulation}
+                  currentPopulation={population}
+                  date={date}
+                />
               </>
             )
           )
