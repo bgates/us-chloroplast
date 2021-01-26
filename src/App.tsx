@@ -6,9 +6,16 @@ import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
 import { geoJSON, Layer, LeafletMouseEvent, Map as LeafletMap } from "leaflet";
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  GeoJSON,
+  CircleMarker,
+  Popup,
+} from "react-leaflet";
 import tw from "twin.macro";
 import "./App.css";
+import { cities } from "./cities";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
 import resolveConfig from "tailwindcss/resolveConfig";
@@ -112,15 +119,14 @@ const valueOfInterest = (properties: GeoJSON.GeoJsonProperties) => (
         )
       );
 
-const getMax = (population: Population) => (year: number) => (
+const getStatePopulations = (population: Population) => (year: number) => (
   features: Array<GeoJSON.Feature>
 ) =>
   pipe(
     features,
     A.map((feature) =>
       pipe(valueOfInterest, ap(feature.properties), ap(population), ap(year))
-    ),
-    (arr) => Math.max(...arr)
+    )
   );
 
 const getStyle = (max: number) => (population: Population) => (
@@ -173,6 +179,7 @@ const StateSummary = ({ state, population, date }: StateSummaryProps) => (
 );
 const LegendContainer = tw.div`text-xs`;
 const Year = StateName;
+const TotalPopulation = tw.h3`text-sm p-1 m-0 text-gray-800`;
 const ColorValue = ({
   n,
   fraction,
@@ -205,9 +212,18 @@ const ColorValue = ({
     )}
   </StateDatum>
 );
-const Legend = ({ max, year }: { max: number; year: number }) => (
+const Legend = ({
+  max,
+  year,
+  total,
+}: {
+  max: number;
+  year: number;
+  total: number;
+}) => (
   <LegendContainer>
     <Year>{year}</Year>
+    <TotalPopulation>Population {formatNumber(total)}</TotalPopulation>
     <dl>
       <ColorValue n={max * 0.9} fraction={0.9} />
       <ColorValue n={max * 0.5} fraction={0.5} />
@@ -221,11 +237,17 @@ const Legend = ({ max, year }: { max: number; year: number }) => (
   </LegendContainer>
 );
 const App = () => {
-  const initialLargestState = 691937;
+  const initialLargestStatePopulation = 691937;
+  const initialTotalPopulation = 0;
   const [map, setMap] = useState<LeafletMap>();
   const [date, setDate] = useState<number>(1790);
   const [population, setPopulation] = useState<Population>("whole");
-  const [largestState, setLargestState] = useState(initialLargestState);
+  const [largestStatePopulation, setLargestStatePopulation] = useState(
+    initialLargestStatePopulation
+  );
+  const [totalPopulation, setTotalPopulation] = useState(
+    initialTotalPopulation
+  );
   const [state, setState] = useState<any>(null);
 
   const highlightFeature = (e: LeafletMouseEvent) => {
@@ -260,8 +282,18 @@ const App = () => {
           map.removeLayer(layer);
         }
       });
-      const max = pipe(data.features, pipe(getMax, ap(population), ap(year)));
-      setLargestState(max);
+      const statePopulations = pipe(
+        data.features,
+        pipe(getStatePopulations, ap(population), ap(year))
+      );
+      const max = Math.max(...statePopulations);
+      setTotalPopulation(
+        pipe(
+          statePopulations,
+          A.reduce(0, (acc, curr) => acc + curr)
+        )
+      );
+      setLargestStatePopulation(max);
       const style = pipe(max, getStyle, ap(population), ap(year));
       geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
         map
@@ -295,11 +327,26 @@ const App = () => {
         />
         <GeoJSON
           data={initialData}
-          style={getStyle(initialLargestState)("whole")(1790)}
+          style={getStyle(initialLargestStatePopulation)("whole")(1790)}
           attribution="US Census"
         />
+        {/*cities[1790].map((city) => (
+          <CircleMarker
+            center={city.location}
+            pathOptions={{ color: "black", fillColor: blue[0] }}
+            radius={10}
+          >
+            <Popup>
+              {city.name}, population {city.population}
+            </Popup>
+          </CircleMarker>
+        ))*/}
         <InfoBox>
-          <Legend max={largestState} year={date} />
+          <Legend
+            max={largestStatePopulation}
+            total={totalPopulation}
+            year={date}
+          />
           <StateSummary state={state} population={population} date={date} />
         </InfoBox>
         {pipe(
