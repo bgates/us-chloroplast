@@ -21,7 +21,9 @@ import { statesData } from "./state-border-geojson";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "./tailwind.config";
 import { FreeVsEnslavedControl } from "./FreeVsEnslavedControl";
-import { capitalize } from "./utils";
+import { capitalize, isStateLayer } from "./utils";
+import memoize from "fast-memoize";
+import { StateFeature } from "./types";
 
 const fullConfig = resolveConfig(tailwindConfig);
 const { blue } = fullConfig.theme.colors;
@@ -236,6 +238,26 @@ const Legend = ({
     </dl>
   </LegendContainer>
 );
+
+const statesInYear = memoize((year: number) => ({
+  ...statesData,
+  features: statesData.features.filter(showState(year)),
+}));
+
+const cachedPopulationInYear = memoize((population: Population, year: number) =>
+  pipe(
+    statesInYear(year).features,
+    pipe(getStatePopulations, ap(population), ap(year)),
+    (statePopulations) => ({
+      max: Math.max(...statePopulations),
+      total: pipe(
+        statePopulations,
+        A.reduce(0, (acc, curr) => acc + curr)
+      ),
+    })
+  )
+);
+
 const App = () => {
   const initialLargestStatePopulation = 691937;
   const initialTotalPopulation = 0;
@@ -268,31 +290,19 @@ const App = () => {
     });
   };
   const handleChange = (map: LeafletMap) => (year: number) => {
-    if (year === 1870 && date === 1860 && population === "enslaved") {
+    if (year >= 1870 && date === 1860 && population === "enslaved") {
       setDate(year);
       setPopulation("whole");
     } else {
       setDate(year);
-      const data = {
-        ...statesData,
-        features: statesData.features.filter(showState(year)),
-      };
       map.eachLayer((layer) => {
         if (layer.getAttribution?.() === "US Census") {
           map.removeLayer(layer);
         }
       });
-      const statePopulations = pipe(
-        data.features,
-        pipe(getStatePopulations, ap(population), ap(year))
-      );
-      const max = Math.max(...statePopulations);
-      setTotalPopulation(
-        pipe(
-          statePopulations,
-          A.reduce(0, (acc, curr) => acc + curr)
-        )
-      );
+      const data = statesInYear(year);
+      const { max, total } = cachedPopulationInYear(population, year);
+      setTotalPopulation(total);
       setLargestStatePopulation(max);
       const style = pipe(max, getStyle, ap(population), ap(year));
       geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
@@ -301,15 +311,21 @@ const App = () => {
     }
   };
 
+  const initializeMap = (newMap: LeafletMap) => {
+    setMap(newMap);
+    handleChange(newMap)(date);
+  };
+  /*
   useEffect(
     () =>
       pipe(
         map,
         O.fromNullable,
-        O.fold(constVoid, (map) => handleChange(map)(date))
+        O.fold(constVoid, (map) => { console.log('effect?');handleChange(map)(date)})
       ),
     [population, handleChange, map]
   );
+  */
   return (
     <div className="App">
       <header className="App-header">
@@ -319,7 +335,7 @@ const App = () => {
         center={[37.0, -96.5]}
         zoom={4}
         scrollWheelZoom={false}
-        whenCreated={setMap}
+        whenCreated={initializeMap}
       >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

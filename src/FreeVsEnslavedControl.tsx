@@ -16,6 +16,7 @@ const Input = ({ currentPopulation, population }: InputType) => (
   <Label active={population === currentPopulation}>
     {capitalize(population)} population
     <input
+      readOnly
       type="radio"
       name="population"
       value={population}
