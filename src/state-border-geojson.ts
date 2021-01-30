@@ -1,4 +1,9 @@
-export const statesData = {
+import { StateFeature } from "./types";
+
+export const statesData: {
+  type: "FeatureCollection";
+  features: Array<StateFeature>;
+} = {
   type: "FeatureCollection" as const,
   features: [
     {

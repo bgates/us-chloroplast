@@ -5,7 +5,13 @@ import { constVoid } from "fp-ts/lib/function";
 import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
 import * as R from "fp-ts/Record";
-import { geoJSON, Layer, LeafletMouseEvent, Map as LeafletMap } from "leaflet";
+import {
+  CircleMarker as LeafletCircleMarker,
+  geoJSON,
+  Layer,
+  LeafletMouseEvent,
+  Map as LeafletMap,
+} from "leaflet";
 import {
   MapContainer,
   TileLayer,
@@ -290,7 +296,7 @@ const App = () => {
     });
   };
   const handleChange = (map: LeafletMap) => (year: number) => {
-    if (year >= 1870 && date === 1860 && population === "enslaved") {
+    if (year >= 1870 && date <= 1860 && population === "enslaved") {
       setDate(year);
       setPopulation("whole");
     } else {
@@ -308,6 +314,11 @@ const App = () => {
       geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
         map
       );
+      map.eachLayer((layer) => {
+        if (layer instanceof LeafletCircleMarker) {
+          layer.bringToFront();
+        }
+      });
     }
   };
 
@@ -315,17 +326,7 @@ const App = () => {
     setMap(newMap);
     handleChange(newMap)(date);
   };
-  /*
-  useEffect(
-    () =>
-      pipe(
-        map,
-        O.fromNullable,
-        O.fold(constVoid, (map) => { console.log('effect?');handleChange(map)(date)})
-      ),
-    [population, handleChange, map]
-  );
-  */
+
   return (
     <div className="App">
       <header className="App-header">
@@ -346,17 +347,19 @@ const App = () => {
           style={getStyle(initialLargestStatePopulation)("whole")(1790)}
           attribution="US Census"
         />
-        {/*cities[1790].map((city) => (
+        {cities[1790].map((city) => (
           <CircleMarker
+            eventHandlers={{ click: () => console.log("huh") }}
+            key={city.name}
             center={city.location}
             pathOptions={{ color: "black", fillColor: blue[0] }}
-            radius={10}
+            radius={5}
           >
             <Popup>
               {city.name}, population {city.population}
             </Popup>
           </CircleMarker>
-        ))*/}
+        ))}
         <InfoBox>
           <Legend
             max={largestStatePopulation}
