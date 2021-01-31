@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as A from "fp-ts/Array";
-import { constVoid } from "fp-ts/lib/function";
 import { ap } from "fp-ts/lib/Identity";
 import * as O from "fp-ts/Option";
-import * as R from "fp-ts/Record";
 import {
   CircleMarker as LeafletCircleMarker,
   geoJSON,
@@ -19,7 +17,6 @@ import {
   CircleMarker,
   Popup,
 } from "react-leaflet";
-import tw from "twin.macro";
 import "./App.css";
 import { cities } from "./cities";
 import DateSlider from "./DateSlider";
@@ -27,9 +24,11 @@ import { statesData } from "./state-border-geojson";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "./tailwind.config";
 import { FreeVsEnslavedControl } from "./FreeVsEnslavedControl";
-import { capitalize, isStateLayer } from "./utils";
 import memoize from "fast-memoize";
-import { StateFeature } from "./types";
+import { Population, StateFeature } from "./types";
+import { InfoBox } from "./InfoBox";
+import { valueOfInterest } from "./utils";
+import { constVoid } from "fp-ts/lib/function";
 
 const fullConfig = resolveConfig(tailwindConfig);
 const { blue } = fullConfig.theme.colors;
@@ -41,7 +40,6 @@ const initialData = {
   ),
 };
 
-type Population = "whole" | "free" | "enslaved";
 const colors = [
   blue["map-100"],
   blue["map-200"],
@@ -66,11 +64,6 @@ const highlightStyle = {
   color: "#666",
   dashArray: "",
 };
-const formatNumber = (num: number) =>
-  num
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-    .padStart(11);
 
 const getColor = (max: number) => (n: number) =>
   n > 0.9 * max
@@ -105,28 +98,6 @@ const showState = (year: number) => (feature: typeof statesData.features[0]) =>
   compareToNullable(feature.properties.admitted, year, (y1, y2) => y1 <= y2) &&
   compareToNullable(feature.properties.until, year, (y1, y2) => y1 > y2, true);
 
-const populationInYear = (census: Record<string, number>, year: number) =>
-  pipe(
-    census,
-    R.lookup(String(year)),
-    O.chain(O.fromNullable),
-    O.getOrElse(() => 0)
-  );
-
-const valueOfInterest = (properties: GeoJSON.GeoJsonProperties) => (
-  population: Population
-) => (year: number) =>
-  population === "whole"
-    ? populationInYear(properties?.census, year)
-    : population === "enslaved"
-    ? populationInYear(properties?.enslavedCensus, year)
-    : pipe(populationInYear(properties?.census, year), (whole) =>
-        pipe(
-          populationInYear(properties?.enslavedCensus, year),
-          (enslaved) => whole - enslaved
-        )
-      );
-
 const getStatePopulations = (population: Population) => (year: number) => (
   features: Array<GeoJSON.Feature>
 ) =>
@@ -153,97 +124,6 @@ const getStyle = (max: number) => (population: Population) => (
         ),
       }
     : {};
-
-const InfoBox = tw.div`rounded p-4 pt-0 bg-gray-50 absolute top-1/2 right-2 w-52 z-1000 text-gray-900`;
-const CurrentState = tw.div`pt-0`;
-const StateName = tw.h2`text-lg p-0 m-0 text-gray-600`;
-const StateDatum = tw.div`flex justify-between`;
-type StateSummaryProps = {
-  state?: GeoJSON.GeoJsonProperties;
-  population: Population;
-  date: number;
-};
-const StateSummary = ({ state, population, date }: StateSummaryProps) => (
-  <CurrentState>
-    {pipe(
-      state,
-      O.fromNullable,
-      O.fold(
-        () => <h2 tw="pt-2">Hover over a state to see its population</h2>,
-        (s) => (
-          <>
-            <StateName>{s.name}</StateName>
-            <dl>
-              <StateDatum>
-                <dt>{capitalize(population)} Population: </dt>
-                <dd>{formatNumber(valueOfInterest(s)(population)(date))}</dd>
-              </StateDatum>
-            </dl>
-          </>
-        )
-      )
-    )}
-  </CurrentState>
-);
-const LegendContainer = tw.div`text-xs`;
-const Year = StateName;
-const TotalPopulation = tw.h3`text-sm p-1 m-0 text-gray-800`;
-const ColorValue = ({
-  n,
-  fraction,
-  comparator = String.fromCharCode(62),
-}: {
-  n: number;
-  fraction: number;
-  comparator?: string;
-}) => (
-  <StateDatum>
-    <dt tw="font-mono whitespace-pre">
-      {comparator} {formatNumber(Math.round(n))}
-    </dt>
-    {fraction === 0.9 ? (
-      <dd tw="bg-blue-map-900 w-8 bg-opacity-70"></dd>
-    ) : fraction === 0.5 ? (
-      <dd tw="bg-blue-map-800 w-8 bg-opacity-70"></dd>
-    ) : fraction === 0.2 ? (
-      <dd tw="bg-blue-map-700 w-8 bg-opacity-70"></dd>
-    ) : fraction === 0.1 ? (
-      <dd tw="bg-blue-map-600 w-8 bg-opacity-70"></dd>
-    ) : fraction === 0.05 ? (
-      <dd tw="bg-blue-map-500 w-8 bg-opacity-70"></dd>
-    ) : fraction === 0.02 ? (
-      <dd tw="bg-blue-map-400 w-8 bg-opacity-70"></dd>
-    ) : fraction === 0.01 && comparator === "&gt;" ? (
-      <dd tw="bg-blue-map-300 w-8 bg-opacity-70"></dd>
-    ) : (
-      <dd tw="bg-blue-map-200 w-8 bg-opacity-70"></dd>
-    )}
-  </StateDatum>
-);
-const Legend = ({
-  max,
-  year,
-  total,
-}: {
-  max: number;
-  year: number;
-  total: number;
-}) => (
-  <LegendContainer>
-    <Year>{year}</Year>
-    <TotalPopulation>Population {formatNumber(total)}</TotalPopulation>
-    <dl>
-      <ColorValue n={max * 0.9} fraction={0.9} />
-      <ColorValue n={max * 0.5} fraction={0.5} />
-      <ColorValue n={max * 0.2} fraction={0.2} />
-      <ColorValue n={max * 0.1} fraction={0.1} />
-      <ColorValue n={max * 0.05} fraction={0.05} />
-      <ColorValue n={max * 0.02} fraction={0.02} />
-      <ColorValue n={max * 0.01} fraction={0.01} />
-      <ColorValue n={max * 0.01} fraction={0.01} comparator="&lt;" />
-    </dl>
-  </LegendContainer>
-);
 
 const statesInYear = memoize((year: number) => ({
   ...statesData,
@@ -276,7 +156,7 @@ const App = () => {
   const [totalPopulation, setTotalPopulation] = useState(
     initialTotalPopulation
   );
-  const [state, setState] = useState<any>(null);
+  const [state, setState] = useState<O.Option<StateFeature>>(O.none);
 
   const highlightFeature = (e: LeafletMouseEvent) => {
     const layer = e.target;
@@ -287,20 +167,20 @@ const App = () => {
   const resetHighlight = (e: LeafletMouseEvent) => {
     const layer = e.target;
     layer.setStyle(baseStyle);
-    setState(null);
+    setState(O.none);
   };
-  const onEachFeature = (feature: GeoJSON.Feature, layer: Layer) => {
-    layer.on({
-      mouseover: highlightFeature,
-      mouseout: resetHighlight,
-    });
-  };
-  const handleChange = (map: LeafletMap) => (year: number) => {
-    if (year >= 1870 && date <= 1860 && population === "enslaved") {
-      setDate(year);
-      setPopulation("whole");
-    } else {
-      setDate(year);
+  const onEachFeature = useCallback(
+    (feature: GeoJSON.Feature, layer: Layer) => {
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+      });
+    },
+    []
+  );
+
+  const updateMap = useCallback(
+    (map: LeafletMap, year: number = date) => {
       map.eachLayer((layer) => {
         if (layer.getAttribution?.() === "US Census") {
           map.removeLayer(layer);
@@ -319,9 +199,23 @@ const App = () => {
           layer.bringToFront();
         }
       });
+    },
+    [date, population, onEachFeature]
+  );
+
+  const handleChange = (map: LeafletMap) => (year: number) => {
+    setDate(year);
+    if (year >= 1870 && date <= 1860 && population === "enslaved") {
+      setPopulation("whole");
+    } else {
+      updateMap(map, year);
     }
   };
-
+  useEffect(() => pipe(map, O.fromNullable, O.fold(constVoid, updateMap)), [
+    population,
+    updateMap,
+    map,
+  ]);
   const initializeMap = (newMap: LeafletMap) => {
     setMap(newMap);
     handleChange(newMap)(date);
@@ -329,9 +223,6 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>Use the slider at the bottom of the map to see changes over time</p>
-      </header>
       <MapContainer
         center={[37.0, -96.5]}
         zoom={4}
@@ -360,14 +251,13 @@ const App = () => {
             </Popup>
           </CircleMarker>
         ))}
-        <InfoBox>
-          <Legend
-            max={largestStatePopulation}
-            total={totalPopulation}
-            year={date}
-          />
-          <StateSummary state={state} population={population} date={date} />
-        </InfoBox>
+        <InfoBox
+          max={largestStatePopulation}
+          total={totalPopulation}
+          year={date}
+          state={state}
+          population={population}
+        />
         {pipe(
           map,
           O.fromNullable,
