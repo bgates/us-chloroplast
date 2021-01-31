@@ -18,7 +18,7 @@ import {
   Popup,
 } from "react-leaflet";
 import "./App.css";
-import { cities } from "./cities";
+import { cities, getCityRadius } from "./cities";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
 import resolveConfig from "tailwindcss/resolveConfig";
@@ -144,6 +144,18 @@ const cachedPopulationInYear = memoize((population: Population, year: number) =>
   )
 );
 
+const citiesToFront = (map: O.Option<LeafletMap>) => {
+  pipe(
+    map,
+    O.fold(constVoid, (m) => {
+      m.eachLayer((layer) => {
+        if (layer instanceof LeafletCircleMarker) {
+          layer.bringToFront();
+        }
+      });
+    })
+  );
+};
 const App = () => {
   const initialLargestStatePopulation = 691937;
   const initialTotalPopulation = 0;
@@ -156,13 +168,16 @@ const App = () => {
   const [totalPopulation, setTotalPopulation] = useState(
     initialTotalPopulation
   );
-  const [state, setState] = useState<O.Option<StateFeature>>(O.none);
+  const [state, setState] = useState<O.Option<StateFeature["properties"]>>(
+    O.none
+  );
 
   const highlightFeature = (e: LeafletMouseEvent) => {
     const layer = e.target;
     layer.setStyle(highlightStyle);
     layer.bringToFront();
-    setState(layer.feature.properties);
+    citiesToFront(O.fromNullable(map));
+    setState(O.some(layer.feature.properties));
   };
   const resetHighlight = (e: LeafletMouseEvent) => {
     const layer = e.target;
@@ -194,11 +209,7 @@ const App = () => {
       geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
         map
       );
-      map.eachLayer((layer) => {
-        if (layer instanceof LeafletCircleMarker) {
-          layer.bringToFront();
-        }
-      });
+      citiesToFront(O.fromNullable(map));
     },
     [date, population, onEachFeature]
   );
@@ -238,13 +249,13 @@ const App = () => {
           style={getStyle(initialLargestStatePopulation)("whole")(1790)}
           attribution="US Census"
         />
-        {cities[1790].map((city) => (
+        {(cities[date] || []).map((city, i) => (
           <CircleMarker
             eventHandlers={{ click: () => console.log("huh") }}
             key={city.name}
             center={city.location}
-            pathOptions={{ color: "black", fillColor: blue[0] }}
-            radius={5}
+            pathOptions={{ color: "red", fillColor: "red" }}
+            radius={getCityRadius(city.population)}
           >
             <Popup>
               {city.name}, population {city.population}

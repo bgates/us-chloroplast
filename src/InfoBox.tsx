@@ -12,7 +12,7 @@ const CurrentState = tw.div`pt-0`;
 const StateName = tw.h2`text-lg p-0 m-0 text-gray-600`;
 const StateDatum = tw.div`flex justify-between`;
 type StateSummaryProps = {
-  state: O.Option<StateFeature>;
+  state: O.Option<StateFeature["properties"]>;
   population: Population;
   date: number;
 };
@@ -24,7 +24,7 @@ const StateSummary = ({ state, population, date }: StateSummaryProps) => (
         () => <h2 tw="pt-2">Hover over a state to see its population</h2>,
         (s) => (
           <>
-            <StateName>{s.properties.name}</StateName>
+            <StateName>{s.name}</StateName>
             <dl>
               <StateDatum>
                 <dt>{capitalize(population)} Population: </dt>
@@ -100,7 +100,7 @@ type InfoBoxProps = {
   max: number;
   year: number;
   total: number;
-  state: O.Option<StateFeature>;
+  state: O.Option<StateFeature["properties"]>;
   population: Population;
 };
 export const InfoBox = ({
