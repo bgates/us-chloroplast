@@ -21,6 +21,7 @@
     "rc-slider": "^9.7.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-hooks-use-previous": "^1.1.1",
     "react-leaflet": "^3.0.5",
     "react-scripts": "4.0.1",
     "styled-components": "^5.2.1",

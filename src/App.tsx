@@ -18,7 +18,7 @@ import {
   Popup,
 } from "react-leaflet";
 import "./App.css";
-import { cities, getCityRadius } from "./cities";
+import { cities as cityData, getCityRadius } from "./cities";
 import DateSlider from "./DateSlider";
 import { statesData } from "./state-border-geojson";
 import resolveConfig from "tailwindcss/resolveConfig";
@@ -171,6 +171,7 @@ const App = () => {
   const [state, setState] = useState<O.Option<StateFeature["properties"]>>(
     O.none
   );
+  const [cities, setCities] = useState<Array<City>>(cityData[1790]);
 
   const highlightFeature = (e: LeafletMouseEvent) => {
     const layer = e.target;
@@ -205,6 +206,7 @@ const App = () => {
       const { max, total } = cachedPopulationInYear(population, year);
       setTotalPopulation(total);
       setLargestStatePopulation(max);
+      setCities(cityData[year] || []);
       const style = pipe(max, getStyle, ap(population), ap(year));
       geoJSON(data, { style, onEachFeature, attribution: "US Census" }).addTo(
         map
@@ -249,7 +251,7 @@ const App = () => {
           style={getStyle(initialLargestStatePopulation)("whole")(1790)}
           attribution="US Census"
         />
-        {(cities[date] || []).map((city, i) => (
+        {(cities || []).map((city, i) => (
           <CircleMarker
             eventHandlers={{ click: () => console.log("huh") }}
             key={city.name}
@@ -268,6 +270,7 @@ const App = () => {
           year={date}
           state={state}
           population={population}
+          cities={cities}
         />
         {pipe(
           map,

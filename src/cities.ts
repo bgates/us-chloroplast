@@ -1,4 +1,4 @@
-import { LatLngTuple } from "leaflet";
+import { City } from "./types";
 
 export const getCityRadius = (size: number) =>
   size > 4000000
@@ -21,15 +21,7 @@ export const getCityRadius = (size: number) =>
     ? 2
     : 1;
 
-export const cities: Record<
-  number,
-  Array<{
-    name: string;
-    state: string;
-    population: number;
-    location: LatLngTuple;
-  }>
-> = {
+export const cities: Record<number, Array<City>> = {
   1790: [
     {
       name: "New York",

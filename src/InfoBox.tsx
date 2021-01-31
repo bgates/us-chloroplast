@@ -1,10 +1,12 @@
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/Option";
+import { createRef } from "react";
 import tw from "twin.macro";
-import { Population, StateFeature } from "./types";
+import { AnimateList } from "./AnimateList";
+import { City, Population, StateFeature } from "./types";
 import { capitalize, formatNumber, valueOfInterest } from "./utils";
 
-const InfoBoxContainer = tw.div`rounded p-4 pt-0 bg-gray-50 absolute top-1/2 right-2 w-52 z-1000 text-gray-900`;
+const InfoBoxContainer = tw.div`rounded p-4 pt-0 bg-gray-50 absolute top-5 right-2 w-52 z-1000 text-gray-900`;
 
 const LegendContainer = tw.div`text-xs`;
 
@@ -96,12 +98,27 @@ const Legend = ({
   </LegendContainer>
 );
 
+const CityList = ({ cities }: { cities: Array<City> }) => (
+  <>
+    <h2>Top 10 Cities</h2>
+    <ol>
+      <AnimateList>
+        {cities.map((city) => (
+          <li key={city.name} ref={createRef()}>
+            {city.name} {formatNumber(city.population)}
+          </li>
+        ))}
+      </AnimateList>
+    </ol>
+  </>
+);
 type InfoBoxProps = {
   max: number;
   year: number;
   total: number;
   state: O.Option<StateFeature["properties"]>;
   population: Population;
+  cities: Array<City>;
 };
 export const InfoBox = ({
   max,
@@ -109,9 +126,11 @@ export const InfoBox = ({
   total,
   state,
   population,
+  cities,
 }: InfoBoxProps) => (
   <InfoBoxContainer>
     <Legend max={max} year={year} total={total} />
+    <CityList cities={cities} />
     <StateSummary state={state} population={population} date={year} />
   </InfoBoxContainer>
 );

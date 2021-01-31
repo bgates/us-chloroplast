@@ -1,3 +1,5 @@
+import { LatLngTuple } from "leaflet";
+
 export type Population = "whole" | "free" | "enslaved";
 
 export type StateFeature = {
@@ -11,4 +13,11 @@ export type StateFeature = {
     enslavedCensus?: Record<number, number>;
   };
   geometry: GeoJSON.GeometryObject;
+};
+
+export type City = {
+  name: string;
+  state: string;
+  population: number;
+  location: LatLngTuple;
 };
