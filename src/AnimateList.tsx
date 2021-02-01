@@ -9,10 +9,13 @@ const calculateBoundingBoxes = (children: List) => {
   const boundingBoxes: BoundingBoxType = {};
 
   Children.forEach(children, (child) => {
+    console.log(child.ref);
     const domNode = child.ref.current;
-    const nodeBoundingBox = domNode.getBoundingClientRect();
+    if (domNode) {
+      const nodeBoundingBox = domNode.getBoundingClientRect();
 
-    boundingBoxes[child.key] = nodeBoundingBox;
+      boundingBoxes[child.key] = nodeBoundingBox;
+    }
   });
 
   return boundingBoxes;
@@ -35,16 +38,18 @@ export const AnimateList = ({ children }: { children: List }) => {
     const hasPrevBoundingBox = Object.keys(prevBoundingBox).length;
 
     if (hasPrevBoundingBox) {
+      console.log("has");
       Children.forEach(children, (child) => {
         const domNode = child.ref.current;
         const firstBox = prevBoundingBox[child.key];
         const lastBox = boundingBox[child.key];
-        const changeInX = firstBox.left - lastBox.left;
+        const changeInY = firstBox.top - lastBox.top;
 
-        if (changeInX) {
+        if (changeInY) {
+          console.log("change");
           requestAnimationFrame(() => {
             // Before the DOM paints, invert child to old position
-            domNode.style.transform = `translateX(${changeInX}px)`;
+            domNode.style.transform = `translateY(${changeInY}px)`;
             domNode.style.transition = "transform 0s";
           });
         }

@@ -25,7 +25,7 @@ import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "./tailwind.config";
 import { FreeVsEnslavedControl } from "./FreeVsEnslavedControl";
 import memoize from "fast-memoize";
-import { Population, StateFeature } from "./types";
+import { City, Population, StateFeature } from "./types";
 import { InfoBox } from "./InfoBox";
 import { valueOfInterest } from "./utils";
 import { constVoid } from "fp-ts/lib/function";
