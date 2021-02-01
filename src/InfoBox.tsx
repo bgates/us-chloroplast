@@ -1,8 +1,7 @@
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/Option";
-import { createRef } from "react";
+import { Flipper, Flipped } from "react-flip-toolkit";
 import tw from "twin.macro";
-import { AnimateList } from "./AnimateList";
 import { City, Population, StateFeature } from "./types";
 import { capitalize, formatNumber, valueOfInterest } from "./utils";
 
@@ -98,17 +97,21 @@ const Legend = ({
   </LegendContainer>
 );
 
+const CityItem = tw.li`flex justify-between`;
 const CityList = ({ cities }: { cities: Array<City> }) => (
   <>
     <h2>Top 10 Cities</h2>
     <ol>
-      <AnimateList>
+      <Flipper flipKey={cities.map((city) => city.name).join("")}>
         {cities.map((city) => (
-          <li key={city.name} ref={createRef()}>
-            {city.name} {formatNumber(city.population)}
-          </li>
+          <Flipped key={city.name} flipId={city.name}>
+            <CityItem>
+              <span>{city.name}</span>{" "}
+              <span>{formatNumber(city.population)}</span>
+            </CityItem>
+          </Flipped>
         ))}
-      </AnimateList>
+      </Flipper>
     </ol>
   </>
 );

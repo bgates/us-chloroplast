@@ -256,7 +256,10 @@ const App = () => {
             eventHandlers={{ click: () => console.log("huh") }}
             key={city.name}
             center={city.location}
-            pathOptions={{ color: "red", fillColor: "red" }}
+            pathOptions={{
+              color: "#54278f",
+              fillOpacity: 0.8,
+            }}
             radius={getCityRadius(city.population)}
           >
             <Popup>
