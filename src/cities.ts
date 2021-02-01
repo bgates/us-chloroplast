@@ -1,24 +1,30 @@
 import { City } from "./types";
 
 export const getCityRadius = (size: number) =>
-  size > 4000000
+  size > 7000000
     ? 10
-    : size > 2000000
+    : size > 6000000
+    ? 9.5
+    : size > 5000000
     ? 9
-    : size > 1000000
+    : size > 4000000
     ? 8
-    : size > 750000
+    : size > 2000000
     ? 7
-    : size > 500000
+    : size > 1000000
     ? 6
-    : size > 250000
+    : size > 750000
     ? 5
-    : size > 125000
+    : size > 500000
     ? 4
-    : size > 50000
+    : size > 250000
     ? 3
-    : size > 25000
+    : size > 125000
+    ? 2.5
+    : size > 50000
     ? 2
+    : size > 25000
+    ? 1.5
     : 1;
 
 export const cities: Record<number, Array<City>> = {
@@ -717,5 +723,577 @@ export const cities: Record<number, Array<City>> = {
       location: [29.95, -90.08],
     },
     */
+  ],
+  1900: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 3437202,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 1698575,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1293697,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 575238,
+      location: [38.627222, -90.197778],
+    },
+    {
+      name: "Boston",
+      state: "Massachusetts",
+      population: 560892,
+      location: [42.358056, -71.063611],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 508957,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 391768,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "Buffalo",
+      state: "New York",
+      population: 352387,
+      location: [42.904722, -78.849444],
+    },
+    {
+      name: "San Francisco",
+      state: "California",
+      population: 342782,
+      location: [37.7775, -122.416389],
+    },
+    {
+      name: "Cincinnati",
+      state: "Ohio",
+      population: 325902,
+      location: [39.1, -84.516667],
+    },
+  ],
+  1910: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 4766883,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 2185283,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1549008,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 687029,
+      location: [38.627222, -90.197778],
+    },
+    {
+      name: "Boston",
+      state: "Massachusetts",
+      population: 670585,
+      location: [42.358056, -71.063611],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 560663,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 558485,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Pittsburgh",
+      state: "Pennsylvania",
+      population: 533905,
+      location: [40.439722, -79.976389],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 465766,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Buffalo",
+      state: "New York",
+      population: 420715,
+      location: [42.904722, -78.849444],
+    },
+    /*
+    {
+      name: "San Francisco",
+      state: "California",
+      population: 342782,
+      location: [37.7775, -122.416389],
+    },
+    {
+      name: "Cincinnati",
+      state: "Ohio",
+      population: 325902,
+      location: [39.1, -84.516667],
+    },
+    */
+  ],
+  1920: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 5620048,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 2701705,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1823779,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 993078,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 796841,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 772897,
+      location: [38.627222, -90.197778],
+    },
+    {
+      name: "Boston",
+      state: "Massachusetts",
+      population: 748060,
+      location: [42.358056, -71.063611],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 733826,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Pittsburgh",
+      state: "Pennsylvania",
+      population: 588343,
+      location: [40.439722, -79.976389],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 576673,
+      location: [34.05, -118.25],
+    },
+  ],
+  1930: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 6930446,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 3376438,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1950961,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1568662,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 1238048,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 900429,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 821960,
+      location: [38.627222, -90.197778],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 804874,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Boston",
+      state: "Massachusetts",
+      population: 781188,
+      location: [42.358056, -71.063611],
+    },
+    {
+      name: "Pittsburgh",
+      state: "Pennsylvania",
+      population: 669817,
+      location: [40.439722, -79.976389],
+    },
+  ],
+  1940: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 7454995,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 3396808,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1931334,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1623452,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 1504277,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 878336,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 859100,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 816048,
+      location: [38.627222, -90.197778],
+    },
+    {
+      name: "Boston",
+      state: "Massachusetts",
+      population: 770816,
+      location: [42.358056, -71.063611],
+    },
+    {
+      name: "Pittsburgh",
+      state: "Pennsylvania",
+      population: 671659,
+      location: [40.439722, -79.976389],
+    },
+  ],
+  1950: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 7891957,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 3620962,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 2071605,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 1970358,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1849568,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 949708,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 914808,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 856796,
+      location: [38.627222, -90.197778],
+    },
+    {
+      name: "Washington",
+      state: "District of Columbia",
+      population: 802178,
+      location: [38.9101, -77.0147],
+    },
+    {
+      name: "Boston",
+      state: "Massachusetts",
+      population: 801444,
+      location: [42.358056, -71.063611],
+    },
+  ],
+  1960: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 7781984,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 3550404,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 2479015,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 2002512,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1670144,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 939024,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Houston",
+      state: "Texas",
+      population: 938219,
+      location: [29.762778, -95.383056],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 914808,
+      location: [41.482222, -81.669722],
+    },
+    {
+      name: "Washington",
+      state: "District of Columbia",
+      population: 763956,
+      location: [38.9101, -77.0147],
+    },
+    {
+      name: "St. Louis",
+      state: "Missouri",
+      population: 750026,
+      location: [38.627222, -90.197778],
+    },
+  ],
+  1970: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 7894862,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 3366957,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 2816061,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1948609,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1511482,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Houston",
+      state: "Texas",
+      population: 1232802,
+      location: [29.762778, -95.383056],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 905759,
+      location: [39.289444, -76.615278],
+    },
+    {
+      name: "Dallas",
+      state: "Texas",
+      population: 844401,
+      location: [32.779167, -96.808889],
+    },
+    {
+      name: "Washington",
+      state: "District of Columbia",
+      population: 756510,
+      location: [38.9101, -77.0147],
+    },
+    {
+      name: "Cleveland",
+      state: "Ohio",
+      population: 750903,
+      location: [41.482222, -81.669722],
+    },
+  ],
+  1980: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 7071639,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 3005072,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 2966850,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1688210,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Houston",
+      state: "Texas",
+      population: 1595138,
+      location: [29.762778, -95.383056],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1203339,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Dallas",
+      state: "Texas",
+      population: 844401,
+      location: [32.779167, -96.808889],
+    },
+    {
+      name: "San Diego",
+      state: "California",
+      population: 875538,
+      location: [32.715, -117.1625],
+    },
+    {
+      name: "Phoenix",
+      state: "Arizona",
+      population: 789704,
+      location: [33.45, -112.066667],
+    },
+    {
+      name: "Baltimore",
+      state: "Maryland",
+      population: 786775,
+      location: [39.289444, -76.615278],
+    },
   ],
 };
