@@ -8026,6 +8026,11 @@ node-emoji@^1.8.1:
   dependencies:
     lodash.toarray "^4.4.0"
 
+node-fetch@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
+  integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
+
 node-forge@0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.9.0.tgz#d624050edbb44874adca12bb9a52ec63cb782579"
@@ -12372,6 +12377,11 @@ ws@^7.2.3:
   version "7.4.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.2.tgz#782100048e54eb36fe9843363ab1c68672b261dd"
   integrity sha512-T4tewALS3+qsrpGI/8dqNMLIVdq/g/85U98HPMa6F0m6xTbvhXU6RCQLqPH3+SlomNV/LdY6RXEbBpMH6EOJnA==
+
+wtf_wikipedia@^8.5.1:
+  version "8.5.1"
+  resolved "https://registry.yarnpkg.com/wtf_wikipedia/-/wtf_wikipedia-8.5.1.tgz#41a058fe46d2be8b7aeaa40a3a43800aa222a41c"
+  integrity sha512-tvLDPsC9bGG9ABMijCCEFwPhK4678glSVX45UwXwT7KhTJgQFhn3cdm84cMOKSTag+/bRfgBG+qe9qXn3AyStw==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

@@ -1,7 +1,9 @@
 import { City } from "./types";
 
 export const getCityRadius = (size: number) =>
-  size > 7000000
+  size > 8000000
+    ? 10.5
+    : size > 7000000
     ? 10
     : size > 6000000
     ? 9.5
@@ -1294,6 +1296,192 @@ export const cities: Record<number, Array<City>> = {
       state: "Maryland",
       population: 786775,
       location: [39.289444, -76.615278],
+    },
+  ],
+  1990: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 7322564,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 3485398,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 2783726,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Houston",
+      state: "Texas",
+      population: 1630553,
+      location: [29.762778, -95.383056],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1585577,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "San Diego",
+      state: "California",
+      population: 1110549,
+      location: [32.715, -117.1625],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 1027974,
+      location: [42.331389, -83.045833],
+    },
+    {
+      name: "Dallas",
+      state: "Texas",
+      population: 1006877,
+      location: [32.779167, -96.808889],
+    },
+    {
+      name: "Phoenix",
+      state: "Arizona",
+      population: 983403,
+      location: [33.45, -112.066667],
+    },
+    {
+      name: "San Antonio",
+      state: "Texas",
+      population: 935933,
+      location: [29.425, -98.493889],
+    },
+  ],
+  2000: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 8008278,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 3694820,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 2896016,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Houston",
+      state: "Texas",
+      population: 1953631,
+      location: [29.762778, -95.383056],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1517550,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Phoenix",
+      state: "Arizona",
+      population: 1321045,
+      location: [33.45, -112.066667],
+    },
+    {
+      name: "San Diego",
+      state: "California",
+      population: 1223400,
+      location: [32.715, -117.1625],
+    },
+    {
+      name: "Dallas",
+      state: "Texas",
+      population: 1188580,
+      location: [32.779167, -96.808889],
+    },
+    {
+      name: "San Antonio",
+      state: "Texas",
+      population: 1144646,
+      location: [29.425, -98.493889],
+    },
+    {
+      name: "Detroit",
+      state: "Michigan",
+      population: 951270,
+      location: [42.331389, -83.045833],
+    },
+  ],
+  2010: [
+    {
+      name: "New York",
+      state: "New York",
+      population: 8175133,
+      location: [40.71274, -74.005974],
+    },
+    {
+      name: "Los Angeles",
+      state: "California",
+      population: 3792621,
+      location: [34.05, -118.25],
+    },
+    {
+      name: "Chicago",
+      state: "Illinois",
+      population: 2695598,
+      location: [41.881944, -87.627778],
+    },
+    {
+      name: "Houston",
+      state: "Texas",
+      population: 2099451,
+      location: [29.762778, -95.383056],
+    },
+    {
+      name: "Philadelphia",
+      state: "Pennsylvania",
+      population: 1526006,
+      location: [39.952, -75.164],
+    },
+    {
+      name: "Phoenix",
+      state: "Arizona",
+      population: 1445632,
+      location: [33.45, -112.066667],
+    },
+    {
+      name: "San Antonio",
+      state: "Texas",
+      population: 1327407,
+      location: [29.425, -98.493889],
+    },
+    {
+      name: "San Diego",
+      state: "California",
+      population: 1307402,
+      location: [32.715, -117.1625],
+    },
+    {
+      name: "Dallas",
+      state: "Texas",
+      population: 1197816,
+      location: [32.779167, -96.808889],
+    },
+    {
+      name: "San Jose",
+      state: "California",
+      population: 945942,
+      location: [37.333333, -121.9],
     },
   ],
 };
